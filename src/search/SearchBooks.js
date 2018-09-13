@@ -6,6 +6,10 @@ import  Book  from '../books/Book'
 
 class SearchBooks extends Component {
 
+    static propTypes = {
+        onAddBook : PropTypes.func.isRequired
+    }
+
     state = {
         query: '',
         booksFound : []
@@ -27,6 +31,7 @@ class SearchBooks extends Component {
     }
 
     render() {
+        const { onAddBook } = this.props
         return (
             <div className="search-books">
                 <div className="search-books-bar">
@@ -48,7 +53,7 @@ class SearchBooks extends Component {
                     <ol className="books-grid">
                         {
                             this.state.booksFound.map(book => 
-                                <Book book={ book } key={ book.id }/>
+                                <Book book={ book } key={ book.id } onUpdateBook={ onAddBook }/>
                             )
                         }
                     </ol>
