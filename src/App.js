@@ -42,14 +42,14 @@ class BooksApp extends React.Component {
 
     let booksUpdated;
 
-    if(shelf === 'none'){
+    if (shelf === 'none') {
       booksUpdated = this._removeBook(book)
     } else if (book.shelf) {
       booksUpdated = this._updateBook(book, shelf)
-    }else{
+    } else {
       booksUpdated = this._addBook(book, shelf)
     }
-    
+
     this.setState({ books: booksUpdated })
 
   }
@@ -96,15 +96,15 @@ class BooksApp extends React.Component {
 
     return (
       <div className="app">
-        <Route exact path="/" render={ () => (
+        <Route exact path="/" render={() => (
           <ListBooks
-            shelfs={ shelfs }
-            onChangeBookToShelf={ this.changeBookToShelf } />
+            shelfs={shelfs}
+            onChangeBookToShelf={this.changeBookToShelf} />
         )} />
-        <Route path="/search" render={ () => (
+        <Route path="/search" render={() => (
           <SearchBooks
-            onChangeBookToShelf={ this.changeBookToShelf } 
-            books={ this.state.books }/>
+            onChangeBookToShelf={this.changeBookToShelf}
+            books={this.state.books} />
         )} />
       </div>
     )
