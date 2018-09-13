@@ -38,6 +38,22 @@ class BooksApp extends React.Component {
     BooksAPI.getAll().then(books => this.setState({ books }))
   }
 
+  changeBookToShelf = (book, shelf) => {
+
+    let booksUpdated;
+
+    if(shelf === 'none'){
+      booksUpdated = this._removeBook(book)
+    } else if (book.shelf) {
+      booksUpdated = this._updateBook(book, shelf)
+    }else{
+      booksUpdated = this._addBook(book, shelf)
+    }
+    
+    this.setState({ books: booksUpdated })
+
+  }
+
   updateShelf = (book, shelf) => {
 
     var booksUpdated;
@@ -52,11 +68,11 @@ class BooksApp extends React.Component {
 
   }
 
-  removeBook = (book) => {
+  _removeBook = (book) => {
     return this.state.books.filter(item => item !== book)
   }
 
-  updateBook = (book, shelf) => {
+  _updateBook = (book, shelf) => {
     return this.state.books.map(item => {
       if (item === book) {
         item.shelf = shelf
@@ -65,9 +81,9 @@ class BooksApp extends React.Component {
     })
   }
 
-  addBook = (book, shelf) => {
+  _addBook = (book, shelf) => {
     book.shelf = shelf
-    this.setState({ books : this.state.books.concat(book) })
+    return this.state.books.concat(book)
   }
 
 
@@ -80,14 +96,15 @@ class BooksApp extends React.Component {
 
     return (
       <div className="app">
-        <Route exact path="/" render={() => (
+        <Route exact path="/" render={ () => (
           <ListBooks
-            shelfs={shelfs}
-            onUpdateShelf={this.updateShelf} />
+            shelfs={ shelfs }
+            onChangeBookToShelf={ this.changeBookToShelf } />
         )} />
-        <Route path="/search" render={() => (
+        <Route path="/search" render={ () => (
           <SearchBooks
-            onAddBook={this.addBook} />
+            onChangeBookToShelf={ this.changeBookToShelf } 
+            books={ this.state.books }/>
         )} />
       </div>
     )

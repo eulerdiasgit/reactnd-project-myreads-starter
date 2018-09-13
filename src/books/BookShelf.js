@@ -5,10 +5,10 @@ import Book from './Book'
 class BookShelf extends Component {
     static propTypes = {
         shelf : PropTypes.object.isRequired,
-        onUpdateShelf: PropTypes.func.isRequired
+        onChangeBookToShelf: PropTypes.func.isRequired
     }
     render() {
-        const { shelf, onUpdateShelf } = this.props
+        const { shelf, onChangeBookToShelf } = this.props
 
         return (
             <div className="bookshelf">
@@ -17,7 +17,7 @@ class BookShelf extends Component {
                     <ol className="books-grid">
                         {shelf.books.map(book => 
                             <li key={ book.id }>
-                                <Book book={ book } onUpdateBook={ onUpdateShelf } />
+                                <Book book={ book } onChangeBookToShelf={ onChangeBookToShelf } />
                             </li>
                         )}
                     </ol>
