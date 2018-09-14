@@ -5,7 +5,7 @@ import { Route } from 'react-router-dom'
 import ListBooks from './books/ListBooks'
 import SearchBooks from './search/SearchBooks'
 
-export var shelfs = [
+export let shelfs = [
   {
     name: 'currentlyReading',
     displayName: 'Currently Reading',
@@ -35,64 +35,96 @@ class BooksApp extends React.Component {
   }
 
   componentDidMount() {
-    BooksAPI.getAll().then(books => this.setState({ books }))
+    BooksAPI.getAll().then(books => this.setState({ books }));
   }
 
+  /**
+   * @description This function change book to shelf wished 
+   * @param {object} book
+   * @param {string} shelf
+   */
   changeBookToShelf = (book, shelf) => {
 
-    let booksUpdated;
+    BooksAPI.update(book, shelf).then(result => {
+      const numberOfBooks = this.getNumberOfBooks(result);
 
-    if (shelf === 'none') {
-      booksUpdated = this._removeBook(book)
-    } else if (book.shelf) {
-      booksUpdated = this._updateBook(book, shelf)
-    } else {
-      booksUpdated = this._addBook(book, shelf)
-    }
-
-    this.setState({ books: booksUpdated })
-
-  }
-
-  updateShelf = (book, shelf) => {
-
-    var booksUpdated;
-
-    if (shelf === 'none') {
-      booksUpdated = this.removeBook(book)
-    } else {
-      booksUpdated = this.updateBook(book, shelf)
-    }
-
-    this.setState({ books: booksUpdated })
-
-  }
-
-  _removeBook = (book) => {
-    return this.state.books.filter(item => item !== book)
-  }
-
-  _updateBook = (book, shelf) => {
-    return this.state.books.map(item => {
-      if (item === book) {
-        item.shelf = shelf
+      if (this.isUpdate(numberOfBooks)) {
+        this.updateBookOfBooksState(book, shelf);
+      } else if (this.isAddBook(numberOfBooks)) {
+        this.addBookOfBooksState(book, shelf);
+      } else {
+        this.removeBookOfBooksState(book, shelf);
       }
-      return item
-    })
+
+    });
+
+  };
+
+  getNumberOfBooks = (booksUpdated) => {
+    return Object.values(booksUpdated).map(i => i.length).reduce((a, b) => a + b, 0);
+  };
+
+  /**
+   * @description remove book to array of books on state
+   * @param {object} book
+   */
+  removeBookOfBooksState = (book, shelf) => {
+    this.setState({ books: this.state.books.filter(item => item !== book) });
+  };
+
+  /**
+   * @description Verify if is to update book on list of books state
+   * @param {object} booksUpdated 
+   */
+  isUpdate = (numberOfBooks) => {
+    return numberOfBooks === this.state.books.length
+  };
+
+  /**
+   * @description update a book to a shelf wished
+   * @param {object} book
+   * @param {string} shelf
+   * @returns {Array} of books updated
+   */
+  updateBookOfBooksState = (book, shelf) => {
+    
+    const books = this.state.books.map(item => {
+      if (item === book) {
+        item.shelf = shelf;
+      }
+      return item;
+    });
+
+    this.setState({ books });
+
+  };
+
+  /**
+   * @description Verify if is to add book on list of books state
+   * @param {object} booksUpdated 
+   */
+  isAddBook = (numberOfBooks) => {
+    return numberOfBooks > this.state.books.length;
   }
 
-  _addBook = (book, shelf) => {
-    book.shelf = shelf
-    return this.state.books.concat(book)
-  }
+  /**
+   * @description add a book to a shelf wished
+   * @param {object} book
+   * @param {string} shelf 
+   * @returns {Array} of books updated
+   */
+  addBookOfBooksState = (book, shelf) => {
+    book.shelf = shelf;
+    this.setState({ books: this.state.books.concat(book) });
+  };
 
 
   render() {
 
     shelfs.forEach(shelf => {
       shelf.books = this.state.books
-        .filter(book => book.shelf === shelf.name)
-    })
+        .filter(book => book.shelf === shelf.name);
+    });
 
     return (
       <div className="app">

@@ -16,52 +16,57 @@ class SearchBooks extends Component {
         booksFound: []
     }
 
-    _searchByTerm = () => {
+    /**
+     * @description set value query on query state and verify if necessary search, if values on query get books by term
+     */
+    searchByTerm = () => {
         this.setState({
             query: this.search.value
         }, () => {
-
-            if (this.state.query && this.state.query.length > 1) {
-                this._getBooksByTerm(this.state.query)
-            } else {
-                this.setState({ booksFound: [] })
-            }
+            this.state.query && this.state.query.length > 1 ? this.getBooksByTerm(this.state.query) : this.setState({ booksFound: [] });
         })
-    }
+    };
 
-    _changeBooksHasShelf = (booksFound, booksOnShelfs) => {
+    /**
+     * @description Change books on result query research per books on shelf list, case it is the same
+     * @param {any} booksFound
+     * @param {any} booksOnShelfs
+     * @returns {Array} books to show
+     */
+    changeBooksHasShelf = (booksFound, booksOnShelfs) => {
         return booksFound.map(book => {
-            let result = booksOnShelfs.find(item => item.id === book.id)
+            let result = booksOnShelfs.find(item => item.id === book.id);
+            return result || book;
+        });
+    };
 
-            if (result) {
-                return result
-            }
-            return book
-        })
-    }
-
-    _getBooksByTerm = (query) => {
+    /**
+     * @description Get books on Api by the term, and set on state
+     * @param {string} query
+     */
+    getBooksByTerm = (query) => {
         BooksAPI.search(query).then(booksFound => {
-            booksFound.length > 0 && this.state.query.length > 1
-                ? this.setState({ booksFound: booksFound })
-                : this._setBooksToEmpty()
-        })
-    }
+            booksFound.length > 0 && this.state.query.length > 1 ? this.setState({ booksFound: booksFound }) : this.setBooksToEmpty();
+        });
+    };
 
-    _setBooksToEmpty = () => {
-        this.setState({ booksFound: [] })
-    }
+    /**
+     * @description Set state booksFound to new Array
+     */
+    setBooksToEmpty = () => {
+        this.setState({ booksFound: [] });
+    };
 
     render() {
-        const { books, onChangeBookToShelf } = this.props
+        const { books, onChangeBookToShelf } = this.props;
 
-        let booksToShow = this._changeBooksHasShelf(this.state.booksFound, books)
+        let booksToShow = this.changeBooksHasShelf(this.state.booksFound, books);
 
         return (
             <div className="search-books">
                 <div className="search-books-bar">
-                    <Link 
-                        to="/" 
+                    <Link
+                        to="/"
                         className="close-search">Close</Link>
                     <div className="search-books-input-wrapper">
                         {/*
@@ -72,7 +77,10 @@ class SearchBooks extends Component {
                   However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
                   you don't find a specific author or title. Every search is limited by search terms.
                 */}
-                        <input ref={input => this.search = input} type="text" placeholder="Search by title or author" onChange={this._searchByTerm} />
+                        <input ref={input => this.search = input}
+                            type="text"
+                            placeholder="Search by title or author"
+                            onChange={this.searchByTerm} />
 
                     </div>
                 </div>
@@ -80,9 +88,9 @@ class SearchBooks extends Component {
                     <ol className="books-grid">
                         {
                             booksToShow.map(book =>
-                                <Book 
-                                    book={book} 
-                                    key={book.id} 
+                                <Book
+                                    book={book}
+                                    key={book.id}
                                     onChangeBookToShelf={onChangeBookToShelf} />
                             )
                         }
