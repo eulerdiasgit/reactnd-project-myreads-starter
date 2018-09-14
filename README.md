@@ -11,6 +11,10 @@ To get started developing right away:
 * install all project dependencies with `npm install`
 * start the development server with `npm start`
 
+Dependencies add to project (this packages will be installed on npm install):
+* react-router - if problems to install execute `npm install react-router-dom`
+* prop-types - if problems to install execute `npm instal prop-types`
+
 ## What You're Getting
 ```bash
 ├── CONTRIBUTING.md
@@ -21,8 +25,14 @@ To get started developing right away:
 │   ├── favicon.ico # React Icon, You may change if you wish.
 │   └── index.html # DO NOT MODIFY
 └── src
+    ├── books
+        ├── Book.js # Contains Jsx to Book
+        ├── BookShelf.js # Contains Jsx to Shelfs call Class Books to show books to Shelf
+        ├── ListBooks # Contains a Jsx to create a shelfs os books
+    ├── search
+        ├──SearchBooks # Contains a Jsx to create a Search page, and method to get books about term
     ├── App.css # Styles for your app. Feel free to customize this as you desire.
-    ├── App.js # This is the root of your app. Contains static HTML right now.
+    ├── App.js # This is the root of your app. Contains Methods to change books of shelfs and Router.
     ├── App.test.js # Used for testing. Provided with Create React App. Testing is encouraged, but not required.
     ├── BooksAPI.js # A JavaScript API for the provided Udacity backend. Instructions for the methods are below.
     ├── icons # Helpful images for your app. Use at your discretion.
